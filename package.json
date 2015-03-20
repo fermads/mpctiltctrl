@@ -1,0 +1,16 @@
+{
+  "name": "mpctiltctrl",
+  "description": "Remote control Media Player Classic playback (forward/backward) by tilting (left/right) a mobile device",
+  "version": "1.0.0",
+  "author": "Fernando MAdS <fermads@gmail.com>",
+  "keywords": [
+    "media player classic",
+    "mpc",
+    "remote control"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fermads/mpctiltctrl.git"
+  },
+  "license": "MIT"
+}

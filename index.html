@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta name="viewport" content="width=device-width,user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="mpc.png">
+  <link rel="apple-touch-icon" href="mpc.png">
+  <link rel="icon" href="mpc.png">
+  <style>
+  body, html {
+    height: 100%;
+  }
+
+  body {
+    background-color: black;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    color: #555;
+  }
+
+  td {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-size: 140px;
+    font-family: arial;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    width: 50%;
+    border-radius: 50px;
+  }
+
+  td:active{
+    background: #222;
+    color: black;
+  }
+
+  td div {
+    margin-top: -38px;
+  }
+
+  table  {
+    border-spacing: 20px;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td name="slowBackward">
+        <div>&lsaquo;</div>
+      </td>
+      <td name="fastBackward">
+        <div>&laquo;</div>
+      </td>
+    </tr>
+    <tr>
+      <td name="slowForward">
+        <div>&rsaquo;</div>
+      </td>
+      <td name="fastForward">
+        <div>&raquo;</div>
+      </td>
+    </tr>
+  </table>
+<script>
+
+var commands = {
+  'playPause'   : 889, // not used
+  'slowBackward': 901,
+  'fastBackward': 903,
+  'slowForward' : 902,
+  'fastForward' : 904
+};
+
+function click(event) {
+  var target, name;
+
+  if(event.target.tagName.toLowerCase() == 'div') {
+    target = event.target.parentNode;
+  }
+
+  name = target.getAttribute('name');
+
+  execute(commands[name]);
+}
+
+function execute(id) {
+  var req = new XMLHttpRequest();
+  req.open('POST', '/command.html', true);
+  req.send('wm_command='+ id);
+}
+
+function tilt(amount) {
+  if(amount > 50) {
+    execute(commands.slowForward);
+  }
+  else if(amount < -50) {
+    execute(commands.slowBackward);
+  }
+}
+
+function init() {
+  var tds = document.getElementsByTagName('td');
+  for (var i = 0; i < tds.length; i++) {
+      tds[i].addEventListener('click', click, false);
+      tds[i].addEventListener('touchstart', click, false);
+  }
+
+  var cooldown = 0;
+  if (window.DeviceOrientationEvent) {
+
+    window.screen.orientation.lock('portrait-primary');
+
+    window.addEventListener('deviceorientation', function(eventData) {
+      // prevent it to execute too many times
+      if(Date.now() - cooldown > 500) {
+        cooldown = Date.now();
+        tilt(eventData.gamma);
+      }
+    }, false);
+  }
+}
+
+init();
+
+</script>
+</body>
+</html>
